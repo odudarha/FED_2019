@@ -1,9 +1,9 @@
-<?php
-  $connect    = mysqli_connect("mysql.yaacotu.com", "yourusername", "yourpassword","fed_db_yourname");
+<?php 
+  include 'connect.php';
   $query      = "SELECT * FROM INV_TYPE ORDER BY TYPE_DESCRIPTION ASC";
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-US">
   <head>
     <meta charset ="UTF-8">
     <meta name = "viewport" content = "width=device-width, initial-scale=1.0">
@@ -18,47 +18,9 @@
     <script src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.js"></script>
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.dataTables.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
-    <style>
-      body {
-          margin:0;
-          padding:0;
-          background-color:#f1f1f1;
-      }
-      .box {
-          width:90%;
-          padding:20px;
-          background-color:#fff;
-          border:1px solid #ccc;
-          border-radius:5px;
-          margin-top:25px;
-      }
-      .horizontal-scroll {
-          /*overflow: hidden;
-          overflow-x: clear;*/
-          clear:  both;
-          width: 100%;
-      }
-      .table-striped {
-          min-width: rem-calc(640);
-      }
-      .add_button_holder {
-          max-width: 100px;
-          float: right;
-      }
-      .col-sm-6 {
-          max-width: 200px;
-      }
-      .add_button_holder, .dataTable_filter {
-          display: inline-block;
-      }
-      .add_button_holder{
-          height: 30px;
-      }
-      div.dataTables_wrapper div.dataTables_filter input {
-          width: 400px;
-      }
-    </style>
+    <link rel="stylesheet" href="fed.css">
   </head>
+  
   <body>
     <div class="container box">
       <h1 align="center">Manage Inventory</h1>
