@@ -100,7 +100,7 @@
           <input type="text" name="description" id="description" class="form-control" autocomplete="off" />
           <span id="valid_description"></span>
           <br />
-          <label>Food Type</label>
+          <label>Food Type</label> <span id="foodTypeWarning" style="color:red;"></span>
           <select name = "foodtype" id="foodtype" class ="form-control">
             <?php
                         foreach($connection->query($query) as $row){
@@ -244,6 +244,8 @@ $(document).ready(function(){
     $('#user_id').val(user_id);
     var food_type=$('#foodtype').val();
     var food_type_string = ""; //use this to grab the textual food type.
+    
+    $('#foodTypeWarning').text(""); 
     if(user_id !='' && description != '' && quantity != '' && food_type != 0) {
       $.ajax({
         url:"insert.php",
@@ -288,9 +290,12 @@ $(document).ready(function(){
         }
       });
     }
+    else if (food_type == 0){
+       $('#foodTypeWarning').text("Please select the food type"); 
+    }
     else
     {
-      alert("Please fill in the UPC, Description, Quantity and select the food type");
+      alert("Please fill in the UPC, Description, and Quantity");
     }
   });
 	
