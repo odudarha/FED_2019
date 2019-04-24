@@ -14,17 +14,187 @@
     <script src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.js"></script>
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.dataTables.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+
     <link rel="stylesheet" href="fed.css">
+
+    <script type="text/javascript" src="Credential\credential_workhorse.js"></script>
+    
+    <script>
+        var accessAttempts = 0;
+        var credType = '';
+        var passMatch = false;
+    </script>
   </head>
   
   <body>
-    <div class="container box">
-      <h1 align="center">FED Volunteer</h1>
-      <br>
-      <div align="center">
-        <a href="index.php" class="btn btn-primary" role="button">Inventory</a>
-        <a href="https://www.signupgenius.com/go/70a094aadad2baaf58-feddm" class="btn btn-primary" role="button">Sign Up</a>
-      </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="jumbotron card card-block vertical-center" style="text-align:center">
+                            <h2>
+                                Welcome to FED
+                            </h2>
+                            <p>
+                                Please enter your credentials below!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-4">
+                            </div>
+                            <div class="col-md-4">
+                                    <form method="post" role="form" name="credForm" id="credForm"enctype="multipart/form-data">                                        
+                                            <div class="form-group">
+                                                 
+                                                <label for="emailUser">
+                                                    Email address
+                                                </label>
+                                                <input type="email" class="form-control" name = "emailUser" id="emailUser" />
+                                            </div>
+                                            <div class="form-group">
+                                                 
+                                                <label for="passwordUser">
+                                                    Password
+                                                </label>
+                                                <input type="password" class="form-control" name="passwordUser" id="passwordUser" />
+                                            </div>
+                                            <div class="form-group collapse" id="passVerifyDiv">
+                                                 
+                                                    <label for="passVerify">
+                                                        Re-Type Password Here.
+                                                    </label>
+                                                    <input type="password" class="form-control" name="passVerifyEntry" id="passVerifyEntry" />
+  
+                                                <div class="clearfix hidden-xs hidden-sm"><!-- needed to force a space, only way I knew how Dave --> </div>
+                                                <div class = "alert alert-danger mt-5 collapse" role="alert" id="passwordEntryMisMatch">
+                                                    <b>WARNING:</b> Passwords do not match!
+                                                </div>
+                                                <div class="clearfix hidden-xs hidden-sm"><!-- needed to force a space, only way I knew how Dave --> </div>
+                                                <div class = "alert alert-success collapse" role="alert" id="passwordEntryGood">
+                                                    Passwords match!
+                                                </div>
+                                            </div>
+                                            <div class="form-check">
+                                                    <input type="checkbox" class="form-check-input" id="newRecipientCheck">
+                                                    <label class="form-check-label" for="newRecipientCheck">New Recipient? Check here.</label>
+                                            </div>
+                                                 
+                                            <button type="submit" class="btn btn-primary" name="formSubmit" id="formSubmit">
+                                                Submit
+                                            </button>
+                                        </form>
+                            </div>
+                            <div class="col-md-4">
+                                <br> <!-- new break -->
+                            </div>
+                        </div>
+                    </div>
+
+                <div class="row">
+                    <div class="col-md-4">
+                    </div>
+                    <div class="col-md-4">
+                        <div class="text-center">
+                        <img class="mx-auto d-block" alt="HCC's FED logo" src="Assets\fed_logo.jpeg" />
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+<!--     <div>
+        <h3>WARNING: This is a work in progress; to go to the inventory page while this page is in development follow the link below</h3>
+        <a href="http://dbabler.yaacotu.com/FED_2019/inventoryMain.php">Inventory </a></div> -->
   </body>
+  <script>
+      $(document).ready(function(){
+        $('#credForm :checkbox').change(function(){
+            if($(this).is(':checked')){
+                $('#passVerifyDiv').collapse("toggle");
+                credType = "NEW";
+                $("#passVerifyEntry").keyup(function(){
+                    passMatch = CREDENTIAL.passMatcher($("#passwordUser").val(), $("#passVerifyEntry").val());
+                    if(!passMatch){
+                        //disable the button if passwords don't match
+                        $("#formSubmit").addClass("disabled");
+                    }else{
+                        //re-enable the button if the passwords do match!
+                        $("#formSubmit").removeClass("disabled");
+                    }
+                });
+
+            }else{
+                //unchecked
+                $('#passVerifyDiv').collapse("toggle");
+                //reset attempts to  default state.
+                accessAttempts = 0;
+                //assume current user
+                credType = 'CURRENT';
+            }
+        });
+
+
+
+
+
+
+        $(document).on('submit', '#credForm', function(event) {
+            event.preventDefault();
+            //notes below from Dave Babler
+            //we are going to append data to a form before sending it via AJAX
+            //first we need to assign the form to a variable
+            var credentialForm = document.getElementById('credForm');
+            //we must instantiate the object of FormData
+            var credFormSubmission = new FormData(credentialForm);
+            //now we will append the amount of access attempts to the form being sent
+            //am using TRIES as a synonym for access attempts to differentiate how the variables are created and passed.
+            //and how which is value, and which turns into a POST variable. ($_POST, localvar)
+            credFormSubmission.append("TRIES", accessAttempts);
+            credFormSubmission.append("CREDENTIAL_NEEDED", credType);
+
+            $.ajax({
+                url:"Credential\\CredCheck.php", 
+                method: 'POST', 
+                data: credFormSubmission, 
+                contentType: false, 
+                processData: false,   //prevent default data parsing behavior
+                dataType: "json", 
+                success:function(phpResponse) {
+                    console.log(phpResponse);
+                    if(phpResponse.USERTAKEN === true){
+                        alert("Username taken: you must select a different username to proceed!");
+                    }else{
+                        $("#passwordUser").empty();
+                        let lv_role = phpResponse.ROLEID;
+                        let lv_access = phpResponse.GRANT_ACCESS;
+                        if (lv_access === true) {
+                            //reset the accessAttempts variable
+                            accessAttempts = 0;     
+                            //send them on their way!                    
+                            CREDENTIAL.sendToRolePage(lv_role);      
+                        }else{ 
+                            accessAttempts++;
+                            alert("Sorry, user name or password error, try again attempt #: " + accessAttempts);
+                        }
+
+                    }
+            }
+
+
+            })
+
+      
+         
+        });
+
+
+      });
+
+  </script>
 </html>

@@ -61,4 +61,6 @@ function does_upc_exist($numberUPC){
     }
     return $bool_value;
 }
+
+//https://stackoverflow.com/questions/23740548/how-to-pass-variables-and-data-from-php-to-javascript
 ?>

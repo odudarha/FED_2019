@@ -236,7 +236,7 @@
          </div>
          <nav>
             <ul>
-               <li><a href="index.php">Home</a></li>
+               <li><a href="inventoryMain.php">Home</a></li>
                <li><a href="aboutus.php">About</a></li>
                <li><a href="ourteam.php">Team</a></li>
                <li><a href="contact.php">Contact</a></li>

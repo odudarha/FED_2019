@@ -1,4 +1,5 @@
 <?php
+session_start();
 include('db.php');
 include('function.php');
 if(isset($_POST["operation"]))
@@ -39,7 +40,16 @@ if(isset($_POST["operation"]))
 
 	if($_POST["operation"] == "Edit")
 	{
-		
+        $stmt = $connection->prepare(
+            "SELECT QUANTITY 
+            FROM INVENTORY 
+            WHERE UPC = :UPC
+            LIMIT 1"
+        );
+        $stmt->execute(['UPC' => $_POST["user_id"]]);
+        $qty = $stmt->fetch();
+        $_SESSION['OLDQTY'] = $qty['QUANTITY'];
+     
 		$statement = $connection->prepare(
 			"UPDATE INVENTORY 
 			SET DESCRIPTION = :description, QUANTITY = :quantity, IMAGE = :image, TYPE_ID = :type_id  WHERE UPC = :UPC
@@ -55,9 +65,11 @@ if(isset($_POST["operation"]))
 		);
 		if(!empty($result))
 		{
-			echo 'Data Updated';
+            //QUESTION 01: this session destroy may not be needed, comment out a later date and try it out
+            session_destroy();
 		}
-	}
+    }
+ 
 }
 
 ?>
