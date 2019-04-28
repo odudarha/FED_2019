@@ -14,7 +14,7 @@ if($_POST['CREDENTIAL_NEEDED']=="NEW"){
 
     $lv_new_user = $_POST['emailUser'];
     $lv_new_pass = $_POST['passwordUser'];
-    $newUserSelectStmt = $credCon->prepare($sql_search);
+    $newUserSelectStmt = $connection->prepare($sql_search);
     if(false===$newUserSelectStmt){
         die('bind_param() failed: ' . htmlspecialchars($userPassStmt->error));
     }
@@ -34,9 +34,9 @@ if($_POST['CREDENTIAL_NEEDED']=="NEW"){
         $sqlNewUser = "INSERT INTO CREDENTIALS( USER_NAME, PASSWORD, ROLEID)
                                     VALUES(:NEW_USER, AES_ENCRYPT(:NEW_PASS, :SALT), :NEW_ROLE)";
         
-        $newUserInsertStmt = $credCon->prepare($sqlNewUser);
+        $newUserInsertStmt = $connection->prepare($sqlNewUser);
         if(false===$newUserInsertStmt){
-            die('prepare() failed: ' . htmlspecialchars($newUserInsertStmt->error));
+            die('prepare() failed: ' . htmlspecialchars($connection->errorInfo()));
            }
         $newUserInsertPrepper = $newUserInsertStmt->execute(
             array(
@@ -80,13 +80,13 @@ if($_POST['CREDENTIAL_NEEDED']=="NEW"){
         $lv_pass = '0v3rid3';
     }
 
-    $userPassStmt = $credCon->prepare("SELECT ROLEID 
+    $userPassStmt = $connection->prepare("SELECT ROLEID 
     FROM CREDENTIALS
     WHERE USER_NAME = :USER 
         AND PASSWORD = AES_ENCRYPT(:PASS, :SALT) ");
 
     if ( false===$userPassStmt ) {
-        die('execute/pdo bind() failed: ' . htmlspecialchars($mysqli->error));
+        die('execute/pdo bind() failed: ' . htmlspecialchars($connection->errorInfo()));
     }
 
     $statementPrepper1 = $userPassStmt->execute(
@@ -98,7 +98,7 @@ if($_POST['CREDENTIAL_NEEDED']=="NEW"){
     );
 
     if ( false===$statementPrepper1 ){
-        die('bind_param() failed: ' . htmlspecialchars($userPassStmt->error));
+        die('bind_param() failed: ' . htmlspecialchars($connection->errorInfo()));
     }
 
     $userPassResult = $userPassStmt->fetch();
