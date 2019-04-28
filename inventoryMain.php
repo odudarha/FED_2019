@@ -165,7 +165,7 @@ $(document).ready(function(){
   load_data();//1
   setPatternFilter("upc", /^-?\d{0,12}$/);
   setPatternFilter("quantity",/^-?\d*$/);
-    
+   $('#foodTypeWarning').text("");  
   $('#foodtype').append($("<option>Choose Food Type</option>").attr("value","0"));
     var foodtypes = $('#foodtype option');
     foodtypes.sort(function(a,b){
@@ -295,6 +295,7 @@ $(document).ready(function(){
     }
     else
     {
+       $('#foodTypeWarning').text(""); 
       alert("Please fill in the UPC, Description, and Quantity");
     }
   });
